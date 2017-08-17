@@ -16,7 +16,9 @@ import { Image } from '../image';
 
 export class UserDetailComponent implements OnInit {
   @Input() user: User;
-  images: Object = {};
+  imagesUrl: Object = {};
+  imagesId: number[] = [];
+  imagesLoadStatus: Object = {};
   constructor(
     private userService: UserService,
     private imageService: ImageService,
@@ -36,16 +38,35 @@ export class UserDetailComponent implements OnInit {
 
     setTimeout(() => {
       console.log(this.user);
-      if (this.user.files) {
-        this.user.files.forEach(ele => this.getImage(ele).then(res => {
-          console.log(res);
-          let imgId = res.id;
-          this.images[res.id] = res.fileUrl;
+      if (this.user.images) {
+        console.log('print images');
+        console.log(this.user.images);
+        this.user.images.forEach(ele => this.getImage(ele).then(res => {
+          // console.log(res);
+          // let imgId = res.id;
+          this.imagesId.push(res.id);
+          this.imagesId.sort(function(a: number, b: number) {
+            if (a > b) {
+              return 1;
+            }
+            if (a < b) {
+              return -1;
+            }
+            if (a === b) {
+              return 0;
+            }
+          });
+          // console.log(this.imagesId);
+          this.imagesUrl[res.id] = res.fileUrl;
+          this.imagesLoadStatus[res.id] = 0;
         }));
+
+        
         
       }
       console.log('images');
-      console.log(this.images);
+      console.log(this.imagesUrl);
+      console.log(this.imagesId);
       console.log('lslsl');
     
     }, 1000);
@@ -67,18 +88,21 @@ export class UserDetailComponent implements OnInit {
         .then(() => this.goBack());
   }
 
-  getImage(id: number): Promise<Image> {
-    console.log(id);
-    return this.imageService.getImageById(id);
+  getImage(url: string): Promise<Image> {
+    // console.log(url + 'ssssssddffggh');
+    return this.imageService.getImageByUrl(url);
   }
 
   test2(): User {
     return this.user;
   }
 
+  loadOk(id: number) {
+    this.imagesLoadStatus[id] = 1;
+  }
 
-
-  
-
+  loadError() {
+    console.log('error');
+  }
 
 }

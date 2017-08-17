@@ -29,7 +29,7 @@ export class UsersComponent implements OnInit {
   ngOnInit(): void {
     this.getUsers();
     // test getUsersSlowly
-    console.log(this.userService.getUsersSlowly().then(res => console.log(res)));
+    // console.log(this.userService.getUsersSlowly().then(res => console.log(res)));
     // console.log(this.userService.getUsersByHttp().then(res => console.log('here is by http' + res)));
   }
 
@@ -43,7 +43,7 @@ export class UsersComponent implements OnInit {
     // res是UserService返回的User数组，作为参数传递并赋值给组件的users属性
     // 使用.then(res => console.log(res))可以将res打印到终端
     this.userService.getUsersByHttp()
-                    .then(res => this.users = res);
+                    .then(res => this.users = res.slice(1, -1));
   }
   
   // 用于导航

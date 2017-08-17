@@ -52,6 +52,7 @@ export class UserSearchComponent implements OnInit {
                       console.log(error);
                       return Observable.of<User[]>([]);
                     });
+    console.log(this.users);
 
   }
 

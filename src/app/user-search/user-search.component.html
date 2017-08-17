@@ -7,7 +7,7 @@
     这个async管道会订阅到这个可观察对象，并且为*ngFor生成一个英雄数组  -->
     <div *ngFor="let user of users | async"
          (click)="gotoDetail(user)" class="search-result">
-      {{user.name}}  
+      {{user.username}}  
     </div>
   </div> 
 

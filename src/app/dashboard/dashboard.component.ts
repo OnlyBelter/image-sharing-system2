@@ -16,23 +16,25 @@ export class DashboardComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit() {
+    console.log('kkkkkkkkkkkkkk');
     this.userService.getUsersByHttp()
          .then(rep => this.users = this.getTopX(rep, 4));
-        //  .then(rep => console.log(rep));
+    //      .then(rep => this.getAllUser(rep));
   }
 
   // 得到分享图片最多的前x个user
   getTopX(users: User[], x: number) {
+    console.log(users);
+    console.log('ksksksksk')
     users.sort(function(a: User, b: User) {
-        if (a.files.length > b.files.length) {
+        if (a.images.length > b.images.length) {
           return -1;
         }
-        if (a.files.length < b.files.length) {
+        if (a.images.length < b.images.length) {
           return 1;
         }
         return 0;
     })
-      console.log(users);
     return users.slice(0, x);
     };
 }

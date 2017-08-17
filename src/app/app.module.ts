@@ -14,9 +14,10 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 
 // 模拟（Mock）服务（内存Web API）来获取和保存数据
-import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService } from './in-memory-data.service';
+// import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+// import { InMemoryDataService } from './in-memory-data.service';
 import { UserSearchComponent } from './user-search/user-search.component';
+import { UploadImageFormComponent } from './upload-image-form/upload-image-form.component';
 
 @NgModule({
   declarations: [
@@ -24,14 +25,15 @@ import { UserSearchComponent } from './user-search/user-search.component';
     UserDetailComponent,
     UsersComponent,
     DashboardComponent,
-    UserSearchComponent
+    UserSearchComponent,
+    UploadImageFormComponent
   ],
   
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    InMemoryWebApiModule.forRoot(InMemoryDataService),
+    // InMemoryWebApiModule.forRoot(InMemoryDataService),
     // RouterModule.forRoot(appRoutes),
     AppRoutingModule
   ],

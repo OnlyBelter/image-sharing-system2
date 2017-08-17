@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from "@angular/http";
+import { Headers, Http, RequestOptions } from "@angular/http";
 
 
 // 有很多像toPromise这样的操作符，用于扩展Observable，为其添加有用的能力
 import 'rxjs/add/operator/toPromise';
 
-import { USERS } from './mock-users';
+// import { USERS } from './mock-users';
 import { User } from "./user";
 
 
@@ -17,42 +17,59 @@ import { User } from "./user";
 @Injectable()
 export class UserService {
 
-  private usersUrl = 'api/users';
+  // private usersUrl = 'api/users';
+  private usersUrl = 'http://192.168.201.211:8024/users'; 
+  // private usersUrl = 'http://localhost:8000/users'; 
   constructor(private http: Http) { }
   
+  //set headers for authorization, https://stackoverflow.com/a/34465070/2803344
+  createAuthorizationHeader(headers: Headers) {
+    headers.append('Authorization', 'Basic ' +
+      btoa('belter:password123')); 
+  }
+
   //UserService暴露了getUsers方法，返回跟以前一样的模拟数据，但它的消费者不需要知道这一点
   //服务是一个分离关注点，建议你把代码放到它自己的文件里
-  getUsers(): Promise<User[]> {
-    // return USERS;  // 直接返回一个数组
-    return Promise.resolve(USERS); // 返回一个Promise对象
-  }
+  // getUsers(): Promise<User[]> {
+  //   // return USERS;  // 直接返回一个数组
+  //   return Promise.resolve(USERS); // 返回一个Promise对象
+  // }
 
-  // 延迟6s后返回
-  getUsersSlowly(): Promise<User[]> {
-    return new Promise(resolve => setTimeout(() => resolve(USERS), 6000));
-  }
+  // // 延迟6s后返回
+  // getUsersSlowly(): Promise<User[]> {
+  //   return new Promise(resolve => setTimeout(() => resolve(USERS), 6000));
+  // }
 
-  // 返回所有user的数据再过滤
-  getUser(id: number): Promise<User> {
-    return this.getUsers()
-               .then(rep => rep.find(user => user.id === id));
-  }
+  // // 返回所有user的数据再过滤
+  // getUser(id: number): Promise<User> {
+  //   return this.getUsers()
+  //              .then(rep => rep.find(user => user.id === id));
+  // }
 
   //Angular 的http.get返回一个 RxJS 的Observable对象
   getUsersByHttp(): Promise<User[]> {
-    return this.http.get(this.usersUrl)
+    let headers = new Headers();
+    this.createAuthorizationHeader(headers);
+    let options = new RequestOptions({ headers: headers });
+    const url = this.usersUrl + '?format=json'   // 必须注明格式
+    console.log('here is in user.service.ts', url);
+    return this.http.get(url, options)
                .toPromise()
-               .then(res => res.json().data as User[])
-              //  .then(res => res)
+               .then(res => res.json().results as User[])
+              //  .then(res => console.log(res.json().results))
                .catch(this.handleError);
   }
   
   // 来发起一个 get-by-id 请求，直接请求单个user的数据
   getUserByHttp(id: number): Promise<User> {
-    const url = `${this.usersUrl}/${id}`;
-    return this.http.get(url)
+    let headers = new Headers();
+    this.createAuthorizationHeader(headers);
+    let options = new RequestOptions({ headers: headers });
+
+    const url = `${this.usersUrl}/${id}` + '?format=json';
+    return this.http.get(url, options)
                 .toPromise()
-                .then(res => res.json().data as User)
+                .then(res => res.json() as User)
                 .catch(this.handleError);
   }
 
