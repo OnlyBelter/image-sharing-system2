@@ -1,8 +1,12 @@
 export class Image {
-  id: number;
-  created: string;
-  userId: string;
-  des?: string;
-  fileUrl: string;
-  owner: string;
+
+  constructor(
+    public id: number,
+    public created: string,
+    public userId: number,
+    public fileUrl: string,
+    public owner: string,
+    public des?: string,
+  ) { }
+
 }

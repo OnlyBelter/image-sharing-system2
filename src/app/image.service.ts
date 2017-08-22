@@ -10,8 +10,8 @@ import { User } from './user';
 @Injectable()
 export class ImageService {
 
-  private imageUrl = 'https://httpbin.org/get';
-  // private imageUrl = '/api/images';
+  // private imageUrl = 'https://httpbin.org/get';
+  private imageUrl = 'http://192.168.201.211:8024/images';
   constructor(private http: Http) { }
 
   getImageById(id: number): Promise<Image> {
@@ -32,6 +32,7 @@ export class ImageService {
     // const url = `${this.imageUrl}/${id}`;
     // const url = `${this.imageUrl}`;
     console.log(url);
+    console.log('this place does not need a head');
     // let headers = new Headers();
     // let token = 'token';
     // headers.append('X-Auth-Token', token);
@@ -40,6 +41,15 @@ export class ImageService {
                     .then(res => res.json() as Image)
                     // .then(res => console.log(res))
                     .catch(this.handleError);
+  }
+
+  private headers = new Headers({'Content-Type': 'application/json'});
+  post(formData: String): void {
+    this.http.post(this.imageUrl, JSON.stringify({formData}), {headers: this.headers})
+    .toPromise()
+    .then(res => res.json().data)
+    .catch(this.handleError);
+    console.log('have a post!')
   }
 
 

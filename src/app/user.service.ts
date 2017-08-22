@@ -85,8 +85,13 @@ export class UserService {
   }
 
   create(name: string): Promise<User> {
+    let headers = new Headers();
+    this.createAuthorizationHeader(headers);
+    headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+
     return this.http
-            .post(this.usersUrl, JSON.stringify({name: name}), {headers: this.headers})
+            .post(this.usersUrl, JSON.stringify({username: name}), options)
             .toPromise()
             // 下面的.then方法对默认返回的数据进行了加工，得到了一个完整的User对象
             .then(res => res.json().data as User)  
