@@ -23,9 +23,17 @@ export class UserService {
   constructor(private http: Http) { }
   
   //set headers for authorization, https://stackoverflow.com/a/34465070/2803344
-  createAuthorizationHeader(headers: Headers) {
+  createAuthorizationHeader(headers: Headers, name: string, pw: string) {
     headers.append('Authorization', 'Basic ' +
-      btoa('belter:password123')); 
+      btoa(`${name}:${pw}`)); 
+  }
+
+  createOptions(name: string, pw: string) {
+    let headers = new Headers();
+    this.createAuthorizationHeader(headers, name, pw);
+    headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    return options;
   }
 
   //UserService暴露了getUsers方法，返回跟以前一样的模拟数据，但它的消费者不需要知道这一点
@@ -48,9 +56,9 @@ export class UserService {
 
   //Angular 的http.get返回一个 RxJS 的Observable对象
   getUsersByHttp(): Promise<User[]> {
-    let headers = new Headers();
-    this.createAuthorizationHeader(headers);
-    let options = new RequestOptions({ headers: headers });
+    // let headers = new Headers();
+    // this.createAuthorizationHeader(headers);
+    let options = this.createOptions('belter', 'password123');
     const url = this.usersUrl + '?format=json'   // 必须注明格式
     console.log('here is in user.service.ts', url);
     return this.http.get(url, options)
@@ -62,9 +70,9 @@ export class UserService {
   
   // 来发起一个 get-by-id 请求，直接请求单个user的数据
   getUserByHttp(id: number): Promise<User> {
-    let headers = new Headers();
-    this.createAuthorizationHeader(headers);
-    let options = new RequestOptions({ headers: headers });
+    // let headers = new Headers();
+    // this.createAuthorizationHeader(headers);
+    let options = this.createOptions('belter', 'password123');
 
     const url = `${this.usersUrl}/${id}` + '?format=json';
     return this.http.get(url, options)
@@ -73,34 +81,32 @@ export class UserService {
                 .catch(this.handleError);
   }
 
-  private headers = new Headers({'Content-Type': 'application/json'});
-
   // 使用 HTTP 的 put() 方法来把修改持久化到服务端
   update(user: User): Promise<User> {
+    let options = this.createOptions(user.username, 'password123');
     const url = `${this.usersUrl}/${user.id}`;
-    return this.http.put(url, JSON.stringify(user), {headers: this.headers})
+    return this.http.put(url, JSON.stringify(user), options)
                     .toPromise()
                     .then(() => user)  // ()
                     .catch(this.handleError);
   }
 
   create(name: string): Promise<User> {
-    let headers = new Headers();
-    this.createAuthorizationHeader(headers);
-    headers.append('Content-Type', 'application/json');
-    let options = new RequestOptions({ headers: headers });
-
+    let options = this.createOptions('belter', 'password123');
+    const url = this.usersUrl + '/';
     return this.http
-            .post(this.usersUrl, JSON.stringify({username: name}), options)
+            .post(url, JSON.stringify({username: name, password: 'password123', 
+            email: 'xx@126.com', first_name: "", last_name: ""}), options)
             .toPromise()
             // 下面的.then方法对默认返回的数据进行了加工，得到了一个完整的User对象
-            .then(res => res.json().data as User)  
+            .then(res => res.json() as User)  
             .catch(this.handleError);
   }
 
   delete(id: number): Promise<void> {
+    let options = this.createOptions('belter', 'password');
     const url = `${this.usersUrl}/${id}`;
-    return this.http.delete(url, {headers: this.headers})
+    return this.http.delete(url, options)
             .toPromise()
             .then(() => null)  // 什么也不返回
             .catch(this.handleError);

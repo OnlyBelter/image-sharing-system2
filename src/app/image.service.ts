@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from "@angular/http";
+import { Headers, Http, RequestOptions } from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';
 
@@ -11,7 +11,21 @@ import { User } from './user';
 export class ImageService {
 
   // private imageUrl = 'https://httpbin.org/get';
-  private imageUrl = 'http://192.168.201.211:8024/images';
+  private imageUrl = 'http://192.168.201.211:8024/images/';
+  //set headers for authorization, https://stackoverflow.com/a/34465070/2803344
+  createAuthorizationHeader(headers: Headers, name: string, pw: string) {
+    headers.append('Authorization', 'Basic ' +
+      btoa(`${name}:${pw}`)); 
+  }
+
+  createOptions(name: string, pw: string) {
+    let headers = new Headers();
+    this.createAuthorizationHeader(headers, name, pw);
+    headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    return options;
+  }
+
   constructor(private http: Http) { }
 
   getImageById(id: number): Promise<Image> {
@@ -44,12 +58,15 @@ export class ImageService {
   }
 
   private headers = new Headers({'Content-Type': 'application/json'});
-  post(formData: String): void {
-    this.http.post(this.imageUrl, JSON.stringify({formData}), {headers: this.headers})
-    .toPromise()
-    .then(res => res.json().data)
-    .catch(this.handleError);
-    console.log('have a post!')
+  post(formData: String, user: string): Promise<Image> {
+    let options = this.createOptions(user, 'password123')
+    console.log('we will have a post!')
+    console.log(JSON.stringify({formData}));
+    return this.http.post(this.imageUrl, JSON.stringify({formData}), options)
+                    .toPromise()
+                    .then(res => res.json() as Image)
+                    .catch(this.handleError);
+    
   }
 
 

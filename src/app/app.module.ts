@@ -18,6 +18,7 @@ import { AppRoutingModule } from './app-routing/app-routing.module';
 // import { InMemoryDataService } from './in-memory-data.service';
 import { UserSearchComponent } from './user-search/user-search.component';
 import { UploadImageFormComponent } from './upload-image-form/upload-image-form.component';
+import { AddUserFormComponent } from './add-user-form/add-user-form.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { UploadImageFormComponent } from './upload-image-form/upload-image-form.
     UsersComponent,
     DashboardComponent,
     UserSearchComponent,
-    UploadImageFormComponent
+    UploadImageFormComponent,
+    AddUserFormComponent
   ],
   
   imports: [

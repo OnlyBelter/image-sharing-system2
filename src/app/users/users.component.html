@@ -1,18 +1,14 @@
 <h2>All Users</h2>
 
 <!--for add new users  -->
-<div>
-  <label>User name:</label><input #userName />
-  <button (click)="add(userName.value); userName.value=''">
-    Add
-  </button>
-</div>
+<app-add-user-form [selectedUser]="selectedUser" [users]="users"></app-add-user-form>
 
 <ul class="users">
   <li *ngFor="let user of users"
     [class.selected]="user === selectedUser"
     (click)="onSelect(user)">
-    <span class="badge">{{user.id}}</span>
+    <span class="badge" *ngIf="user.id">{{user.id}}</span>
+    <span class="badge" *ngIf="!user.id">id</span>
     <span>{{user.username}}</span>
     <!--添加删除按钮，$event语句是为了阻止点击事件向上冒泡  -->
     <button class="delete" (click)="delete(user); $event.stopPropagation()">x</button>  

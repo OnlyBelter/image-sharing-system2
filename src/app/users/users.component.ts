@@ -18,6 +18,7 @@ export class UsersComponent implements OnInit {
   users: User[];  // 添加一个尚未初始化的users属性
   selectedUser: User;
   
+  newUser: User = {url: '', id: 0, username: 'Alpha', images: []};
   // the constructor itself does nothing, the parameter simultaneously deinfes 
   // a private userService property and identifies it as a UserService injection
   // 相当于python class中的__init__(...)
@@ -28,6 +29,7 @@ export class UsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUsers();
+    // console.log(this.users);
     // test getUsersSlowly
     // console.log(this.userService.getUsersSlowly().then(res => console.log(res)));
     // console.log(this.userService.getUsersByHttp().then(res => console.log('here is by http' + res)));
@@ -43,7 +45,8 @@ export class UsersComponent implements OnInit {
     // res是UserService返回的User数组，作为参数传递并赋值给组件的users属性
     // 使用.then(res => console.log(res))可以将res打印到终端
     this.userService.getUsersByHttp()
-                    .then(res => this.users = res.slice(1, -1));
+                    .then(res => this.users = res.slice(1));
+                    // .then(res => console.log(res));
   }
   
   // 用于导航
@@ -51,16 +54,6 @@ export class UsersComponent implements OnInit {
     this.router.navigate(['/detail', this.selectedUser.id]);
   }
 
-  // 当点击事件触发时，我们调用组件的点击处理器，然后清空这个输入框，以便用来输入另一个名字。
-  add(name: string): void {
-    name = name.trim();
-    if (!name) { return; }
-    this.userService.create(name)
-        .then(res => {  // 将返回的User对象添加到users属性中
-          this.users.push(res);  // 直接使用push方法，不用刷新页面就可以直接更新列表
-          this.selectedUser = null;
-        });
-  }
 
   delete(user: User): void {
     this.userService

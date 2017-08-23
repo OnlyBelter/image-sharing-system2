@@ -34,7 +34,10 @@ export class UploadImageFormComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     let formData = JSON.stringify(this.model);
-    this.imageService.post(formData);
+    this.imageService.post(formData, this.model.owner)
+                     .then(res =>{
+                       console.log(res);
+                     });
     console.log(formData);
   }
   
