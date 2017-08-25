@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms/forms';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
@@ -33,7 +33,7 @@ export class UploadImageFormComponent implements OnInit {
   }
   
   createFrom(user: User) {
-    // I didn't put file field in this form
+    // Put file field in this form for resetting its value
     this.imageForm = this.fb.group({
       id: 1,
       created: '20170825',
@@ -42,6 +42,7 @@ export class UploadImageFormComponent implements OnInit {
       owner: user.username,
       des: '',
       pw: '',
+      localImage: '',
     })
     console.log(user);
   }
@@ -60,14 +61,17 @@ export class UploadImageFormComponent implements OnInit {
     this.submitted = true;
     console.log(this.file);  // file is here
     console.log(this.imageForm.value);  // other fields are here
-    this.formData.append('localImage', this.file, this.file.name);
+    
     for (let item in this.imageForm.value) {
       console.log(item)
-      if (item !== 'pw') {
-        this.formData.append(item, this.imageForm.value[item]);
+      if (item === "pw") {
+        this.password = this.imageForm.value[item];  // password
+      }
+      else if (item === 'localImage') {
+        this.formData.append('localImage', this.file, this.file.name);  // file
       }
       else {
-        this.password = this.imageForm.value[item];
+        this.formData.append(item, this.imageForm.value[item]);  // other fields
       }
       
     }
@@ -81,14 +85,17 @@ export class UploadImageFormComponent implements OnInit {
                        console.log(res);
                      });
   }
-
+  
+  // reset formGroup
   onClick(form: FormGroup) {
     form.reset({
       userId: this.user.id,
       owner: this.user.username,
       created: '20170825',
       fileUrl: 'http://www.fujifilm.com.sg/Products/digital_cameras/x/fujifilm_x_t1/sample_images/img/index/ff_x_t1_001.JPG',
-    })
+    });
+    // this.myInputFile.value = '';
+    // void(0);
     this.submitted=false;
     console.log(form.value);
   }

@@ -2,7 +2,7 @@
 
   <h2>Upload New Image</h2>
   
-  <form [formGroup]="imageForm" (ngSubmit)="onSubmit()" >
+  <form [formGroup]="imageForm"  (ngSubmit)="onSubmit()" >
     <div class="form-group">
       <label for="fileUrl">File Url</label>
       <input type="url" class="form-control" id="fileUrl" 
@@ -14,12 +14,11 @@
       <p>{{imageForm.get('fileUrl').valid | json}}</p>
       <p>{{imageForm.get('fileUrl').value | json}}</p>
     </div>
-    <!-- upload an image 
-    don't define this field in formGroup-->
+    <!-- upload an image define this field in formGroup for reset value-->
     <div class="form-group">
       <label for="localImage">Local File</label>
       <input type="file" class="form-control" id="localImage"
-      (change)="onChange($event)" accept=".jpg, .png" >
+      (change)="onChange($event)" accept=".jpg, .png" formControlName="localImage">
     </div>
     <div class="form-group">
       <label for="des">Description</label>
@@ -42,7 +41,7 @@
       <label for="pw">password</label>
       <input type="password" class="form-control" id="pw"
       formControlName="pw" required>
-  </div>
+    </div>
     <button type="submit" class="btn btn-success" [disabled]="!imageForm.valid">Submit</button>
   </form>
 </div>

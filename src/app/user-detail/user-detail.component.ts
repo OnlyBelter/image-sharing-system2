@@ -69,7 +69,7 @@ export class UserDetailComponent implements OnInit {
       console.log(this.imagesId);
       console.log('lslsl');
     
-    }, 300000);
+    }, 1000);
     if (this.user) {
       console.log(this.user);
       console.log('love');
