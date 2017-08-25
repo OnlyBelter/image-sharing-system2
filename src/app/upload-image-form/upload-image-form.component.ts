@@ -1,4 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { NgForm } from '@angular/forms/forms';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+
 import { Image } from '../image';
 import { User } from '../user';
 import { ImageService } from '../image.service';
@@ -11,37 +14,83 @@ import { ImageService } from '../image.service';
 })
 export class UploadImageFormComponent implements OnInit {
 
- @Input() user: User;  // this value comes from component user-detail's tempolate
+  @Input() user: User;  // this value comes from parent component user-detail's tempolate
+  private file: File;
+  private formData: FormData = new FormData();
+  private imageForm: FormGroup;
+  private submitted = false;
+  private imageUrl = 'http://192.168.201.211:8024/images/';
+  private password: string;
+
   constructor(
     private imageService: ImageService,
+    private fb: FormBuilder,
   ) { }
-  model: Image;
+
   ngOnInit() {
     console.log(this.user);
-    this.model = new Image(50, '20170822', this.user.id,  
-    'https://upload.wikimedia.org/wikipedia/commons/5/58/PikiWiki_Israel_16825_akko_from_the_sea_panoramic_picture.JPG',
-     this.user.username);
+     this.createFrom(this.user);  // create form here, so we can get this.user's value
+  }
+  
+  createFrom(user: User) {
+    // I didn't put file field in this form
+    this.imageForm = this.fb.group({
+      id: 1,
+      created: '20170825',
+      userId: user.id,
+      fileUrl: 'http://images.fineartamerica.com/images-medium-large-5/mt-shuksan-picture-lake-dennis-romano.jpg',
+      owner: user.username,
+      des: '',
+      pw: '',
+    })
+    console.log(user);
   }
 
-  // model = new Image(50, '20170822', '20', '', '', 'Tornado');
-  
-  submitted = false;
-
-  newImage() {
-    this.model = new Image(50, '20170823', this.user.id,  'f0099', this.user.username);
+  // https://stackoverflow.com/a/41465502/2803344
+  // get a file object from form input
+  onChange(event: EventTarget) {
+    let eventObj: MSInputMethodContext = <MSInputMethodContext> event;
+    let target: HTMLInputElement = <HTMLInputElement> eventObj.target;
+    let files: FileList = target.files;
+    this.file = files[0];
   }
   
   onSubmit() {
+    // deal with string fields and file separately
     this.submitted = true;
-    let formData = JSON.stringify(this.model);
-    this.imageService.post(formData, this.model.owner)
+    console.log(this.file);  // file is here
+    console.log(this.imageForm.value);  // other fields are here
+    this.formData.append('localImage', this.file, this.file.name);
+    for (let item in this.imageForm.value) {
+      console.log(item)
+      if (item !== 'pw') {
+        this.formData.append(item, this.imageForm.value[item]);
+      }
+      else {
+        this.password = this.imageForm.value[item];
+      }
+      
+    }
+    
+    // console.log('###here is the total form data');
+    console.log(this.formData);
+    console.log(this.formData.get('fileUrl'));
+    console.log(this.user.username);
+    this.imageService.post(this.formData, this.user.username, this.password)
                      .then(res =>{
                        console.log(res);
                      });
-    console.log(formData);
+  }
+
+  onClick(form: FormGroup) {
+    form.reset({
+      userId: this.user.id,
+      owner: this.user.username,
+      created: '20170825',
+      fileUrl: 'http://www.fujifilm.com.sg/Products/digital_cameras/x/fujifilm_x_t1/sample_images/img/index/ff_x_t1_001.JPG',
+    })
+    this.submitted=false;
+    console.log(form.value);
   }
   
-  // TODO: Remove this when we're done
-  // get diagnostic() { return JSON.stringify(this.model); }  
-
 }

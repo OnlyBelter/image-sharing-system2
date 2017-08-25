@@ -1,54 +1,49 @@
-<!-- <p>
-  upload-image-form works!
-</p> -->
-<!-- <div>
-  <input #newHero (keyup.enter)="addHero(newHero.value); newHero.value='' "
-              (blur)="addHero(newHero.value); newHero.value='' ">
-  <button (click)="addHero(newHero.value); newHero.value='' ">Add</button>
-  <ul><li *ngFor="let hero of heroes">{{hero}}</li></ul>
-</div> -->
-
-<div [hidden]="submitted">
+<div [hidden]="submitted" *ngIf="user">
 
   <h2>Upload New Image</h2>
   
-  <form #uploadImageForm="ngForm" (ngSubmit)="onSubmit()">
-    <!-- <div class="form-group">
-      <label for="id">Image ID</label>
-      <input type="text" class="form-control" id="id" required>
-    </div> -->
-    <div class="form-group">
-      <label for="created">Created</label>
-      <input type="text" class="form-control" id="created"
-      [(ngModel)]="model.created" name="created" #created="ngModel" required>
-    </div>
-    <div class="form-group">
-      <label for="userId">User ID</label>
-      <input type="text" class="form-control" id="userId"
-      [(ngModel)]="model.userId" name="userId" #userId="ngModel" readonly>
-    </div>
-    <div class="form-group">
-        <label for="des">Description</label>
-        <input type="text" class="form-control" id="des"
-        [(ngModel)]="model.des" name="des" #des="ngModel">
-    </div>
-
+  <form [formGroup]="imageForm" (ngSubmit)="onSubmit()" >
     <div class="form-group">
       <label for="fileUrl">File Url</label>
-      <input type="url" class="form-control" id="fileUrl"
-      [(ngModel)]="model.fileUrl" name="fileUrl" #fileUrl="ngModel" required>
-      <div [hidden]="fileUrl.valid || fileUrl.pristine" 
+      <input type="url" class="form-control" id="fileUrl" 
+      formControlName="fileUrl" required>
+      <div [hidden]="imageForm.get('fileUrl').valid || imageForm.get('fileUrl').pristine" 
             class="alert alert-danger">
         File Url is required
       </div>
+      <p>{{imageForm.get('fileUrl').valid | json}}</p>
+      <p>{{imageForm.get('fileUrl').value | json}}</p>
+    </div>
+    <!-- upload an image 
+    don't define this field in formGroup-->
+    <div class="form-group">
+      <label for="localImage">Local File</label>
+      <input type="file" class="form-control" id="localImage"
+      (change)="onChange($event)" accept=".jpg, .png" >
+    </div>
+    <div class="form-group">
+      <label for="des">Description</label>
+      <input type="text" class="form-control" id="des" 
+      formControlName="des">
+    </div>
+    <div class="form-group">
+      <label for="userId">User ID</label>
+      <input type="text" class="form-control" id="userId" 
+      formControlName="userId" readonly>
+      <p>{{imageForm.get('userId').value | json}}</p>
     </div>
     <div class="form-group">
         <label for="owner">Owner</label>
         <input type="text" class="form-control" id="owner"
-        [(ngModel)]="model.owner" name="owner" #owner="ngModel" readonly>
+        formControlName="owner" readonly>
     </div>
-    <button type="button" class="btn btn-default" (click)="uploadImageForm.reset(); newImage()">New Image</button>
-    <button type="submit" class="btn btn-success" [disabled]="!uploadImageForm.form.valid">Submit</button>
+    <!-- input user's password -->
+    <div class="form-group">
+      <label for="pw">password</label>
+      <input type="password" class="form-control" id="pw"
+      formControlName="pw" required>
+  </div>
+    <button type="submit" class="btn btn-success" [disabled]="!imageForm.valid">Submit</button>
   </form>
 </div>
 
@@ -60,26 +55,30 @@
     <h2>You submitted the following content:</h2>
     <div class="row">
       <div class="col-xs-3">Created</div>
-      <div class="col-xs-9  pull-left">{{ model.created }}</div>
+      <div class="col-xs-9  pull-left">{{ imageForm.get('created').value | json }}</div>
     </div>
     <div class="row">
       <div class="col-xs-3">User ID</div>
-      <div class="col-xs-9 pull-left">{{ model.userId }}</div>
+      <div class="col-xs-9 pull-left">{{ imageForm.get('userId').value | json }}</div>
     </div>
     <div class="row">
       <div class="col-xs-3">Description</div>
-      <div class="col-xs-9 pull-left">{{ model.des }}</div>
+      <div class="col-xs-9 pull-left">{{ imageForm.get('des').value | json }}</div>
     </div>
     <div class="row">
         <div class="col-xs-3">File Url</div>
-        <div class="col-xs-9 pull-left">{{ model.fileUrl }}</div>
-      </div>
-      <div class="row">
-        <div class="col-xs-3">Owner</div>
-        <div class="col-xs-9 pull-left">{{ model.owner }}</div>
-      </div>
+        <div class="col-xs-9 pull-left">{{ imageForm.get('fileUrl').value | json }}</div>
+    </div>
+    <div class="row">
+      <div class="col-xs-3">Owner</div>
+      <div class="col-xs-9 pull-left">{{ imageForm.get('owner').value | json }}</div>
+    </div>
+    <div class="row" *ngIf="file">
+      <div class="col-xs-3">Local Image</div>
+      <div class="col-xs-9 pull-left">{{ file.name }}</div>
+    </div>
     <br>
-    <button class="btn btn-primary" (click)="submitted=false">Upload another image</button>
+    <button class="btn btn-primary" (click)="onClick(imageForm)">Upload another image</button>
 </div>
 <!-- TODO: remove this: {{}} -->
 <!-- <div>

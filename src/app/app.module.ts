@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpModule } from '@angular/http';
 
@@ -34,10 +35,11 @@ import { AddUserFormComponent } from './add-user-form/add-user-form.component';
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     // InMemoryWebApiModule.forRoot(InMemoryDataService),
     // RouterModule.forRoot(appRoutes),
-    AppRoutingModule
+    AppRoutingModule, 
   ],
   providers: [UserService, ImageService], // 所有的服务必须在这里注册
   bootstrap: [AppComponent]

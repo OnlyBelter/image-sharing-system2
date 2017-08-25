@@ -39,8 +39,8 @@ export class UserDetailComponent implements OnInit {
     setTimeout(() => {
       console.log(this.user);
       if (this.user.images) {
-        console.log('print images');
-        console.log(this.user.images);
+        // console.log('print images');
+        // console.log(this.user.images);
         this.user.images.forEach(ele => this.getImage(ele).then(res => {
           // console.log(res);
           // let imgId = res.id;
@@ -69,7 +69,7 @@ export class UserDetailComponent implements OnInit {
       console.log(this.imagesId);
       console.log('lslsl');
     
-    }, 1000);
+    }, 300000);
     if (this.user) {
       console.log(this.user);
       console.log('love');
