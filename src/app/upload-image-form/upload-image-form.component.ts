@@ -94,8 +94,7 @@ export class UploadImageFormComponent implements OnInit {
       created: '20170825',
       fileUrl: 'http://www.fujifilm.com.sg/Products/digital_cameras/x/fujifilm_x_t1/sample_images/img/index/ff_x_t1_001.JPG',
     });
-    // this.myInputFile.value = '';
-    // void(0);
+    this.formData = new FormData();
     this.submitted=false;
     console.log(form.value);
   }
