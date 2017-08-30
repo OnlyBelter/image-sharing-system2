@@ -60,6 +60,16 @@ export class ImageService {
                     .catch(this.handleError);
   }
 
+  deleteImage(id: number, user: string, pw: string): Promise<void> {
+    let options = this.createOptions(user, pw);
+    const url = `${this.imageUrl}${id}/` + '?format=json';
+    console.log(url)
+    return this.http.delete(url, options)
+            .toPromise()
+            .then(() => null)  // 什么也不返回
+            .catch(this.handleError);
+  }
+
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only
     return Promise.reject(error.message || error);

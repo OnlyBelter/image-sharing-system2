@@ -16,9 +16,12 @@ import { Image } from '../image';
 
 export class UserDetailComponent implements OnInit {
   @Input() user: User;
+  images: Image[] = [];
   imagesUrl: Object = {};
+  localImages: Object = {};
   imagesId: number[] = [];
   imagesLoadStatus: Object = {};
+  password: string = '';
   constructor(
     private userService: UserService,
     private imageService: ImageService,
@@ -42,8 +45,9 @@ export class UserDetailComponent implements OnInit {
         // console.log('print images');
         // console.log(this.user.images);
         this.user.images.forEach(ele => this.getImage(ele).then(res => {
-          // console.log(res);
+          console.log(res);
           // let imgId = res.id;
+          this.images.push(res);
           this.imagesId.push(res.id);
           this.imagesId.sort(function(a: number, b: number) {
             if (a > b) {
@@ -57,12 +61,14 @@ export class UserDetailComponent implements OnInit {
             }
           });
           // console.log(this.imagesId);
-          this.imagesUrl[res.id] = res.fileUrl;
+          if (res.localImage) {
+            this.imagesUrl[res.id] = res.localImage;
+          }
+          else {
+            this.imagesUrl[res.id] = res.fileUrl;
+          }
           this.imagesLoadStatus[res.id] = 0;
         }));
-
-        
-        
       }
       console.log('images');
       console.log(this.imagesUrl);
@@ -103,6 +109,12 @@ export class UserDetailComponent implements OnInit {
 
   loadError() {
     console.log('error');
+  }
+
+  deleteImage(image: Image, password: string): void {
+    let user = this.user.username
+    this.imageService
+        .deleteImage(image.id, user, password);
   }
 
 }

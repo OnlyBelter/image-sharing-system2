@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-
 @Component({
   selector: 'app-root',
   // moduleId: module.id, // 启用相对于模块的文件URL
@@ -12,6 +11,7 @@ import { Component, OnInit } from '@angular/core';
 
 export class AppComponent implements OnInit {
   title = 'Image Sharing System';
+
   constructor() { }
 
   ngOnInit() {

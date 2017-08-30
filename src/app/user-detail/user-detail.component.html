@@ -6,19 +6,25 @@
     <!--虽然NgModel是一个有效的Angular指令，但它默认情况下却是不可用的。 
       它属于一个可选模块FormsModule。 我们必须选择使用那个模块。
       (在app.module.ts中导入并添加到imports属性中)  -->
-     <input [(ngModel)]="user.username" placeholder="name" /> 
+     <input type="text" [(ngModel)]="user.username" placeholder="name" /> 
   </div>
   <div>
     <label>Shared Pictures:</label>
     <ul>
       <!--imagesId是一个数组，不能是object  -->
-      <li *ngFor="let id of imagesId">
-           <img width="300" src="{{imagesUrl[id]}}" 
-                *ngIf="imagesUrl[id]"
-                (load)="loadOk(id)"
-                [hidden]="!imagesLoadStatus[id]">
-           <p>{{imagesUrl[id]}}</p>
-        <div *ngIf="!imagesLoadStatus[id]" class="loader"></div>
+      <li *ngFor="let image of images">
+           <img width="300" src="{{image.fileUrl}}" 
+                *ngIf="!image.localImage && image.fileUrl"
+                (load)="loadOk(image.id)"
+                [hidden]="!imagesLoadStatus[image.id]">
+            <img width="300" src="{{image.localImage}}" 
+                *ngIf="image.localImage"
+                (load)="loadOk(image.id)"
+                [hidden]="!imagesLoadStatus[image.id]">
+           <button class="delete" (click)="deleteImage(image); $event.stopPropagation()">x</button> 
+           <p>{{image.fileUrl}}</p>
+           <p *ngIf="image.localImage">{{image.localImage}}</p>
+        <div *ngIf="!imagesLoadStatus[image.id]" class="loader"></div>
       <!-- <button (click)="getImage(fid)">Test</button> -->
       </li>
     </ul>

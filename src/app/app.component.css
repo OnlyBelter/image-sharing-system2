@@ -26,3 +26,11 @@ nav a:hover {
 nav a.active {
   color: #039be5;
 }
+
+#username_id {
+  padding-top: 16px;
+}
+
+#logout {
+  padding-top: 6px;
+}

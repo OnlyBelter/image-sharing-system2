@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import { UserService } from "./user.service";
 import { ImageService } from "./image.service";
+import { AuthenticationService } from './authentication.service';
 import { UsersComponent } from './users/users.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
@@ -20,6 +21,7 @@ import { AppRoutingModule } from './app-routing/app-routing.module';
 import { UserSearchComponent } from './user-search/user-search.component';
 import { UploadImageFormComponent } from './upload-image-form/upload-image-form.component';
 import { AddUserFormComponent } from './add-user-form/add-user-form.component';
+import { LogInComponent } from './log-in/log-in.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { AddUserFormComponent } from './add-user-form/add-user-form.component';
     DashboardComponent,
     UserSearchComponent,
     UploadImageFormComponent,
-    AddUserFormComponent
+    AddUserFormComponent,
+    LogInComponent
   ],
   
   imports: [
@@ -41,7 +44,7 @@ import { AddUserFormComponent } from './add-user-form/add-user-form.component';
     // RouterModule.forRoot(appRoutes),
     AppRoutingModule, 
   ],
-  providers: [UserService, ImageService], // 所有的服务必须在这里注册
+  providers: [UserService, ImageService, AuthenticationService], // 所有的服务必须在这里注册
   bootstrap: [AppComponent]
 })
 export class AppModule { }
