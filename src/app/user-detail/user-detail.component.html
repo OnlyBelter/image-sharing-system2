@@ -1,5 +1,8 @@
 <div *ngIf="user">
   <h2>{{user.username}} details!</h2>
+  <div *ngIf="!loginValid" class="alert alert-danger" role="alert">
+    {{tokenErrorMessage}}
+  </div>
   <div><label>id: </label>{{user.id}}</div>
   <div>
     <label>name: </label>
@@ -10,6 +13,8 @@
   </div>
   <div>
     <label>Shared Pictures:</label>
+    
+    <p>check if current login user can edit: {{canEdit}}</p>
     <ul>
       <!--imagesId是一个数组，不能是object  -->
       <li *ngFor="let image of images">
@@ -21,8 +26,8 @@
                 *ngIf="image.localImage"
                 (load)="loadOk(image.id)"
                 [hidden]="!imagesLoadStatus[image.id]">
-           <button class="delete" (click)="deleteImage(image); $event.stopPropagation()">x</button> 
-           <p>{{image.fileUrl}}</p>
+           <button [hidden]="!canEdit" class="delete" (click)="deleteImage(image); $event.stopPropagation()">x</button> 
+           <p *ngIf="!image.localImage">{{image.fileUrl}}</p>
            <p *ngIf="image.localImage">{{image.localImage}}</p>
         <div *ngIf="!imagesLoadStatus[image.id]" class="loader"></div>
       <!-- <button (click)="getImage(fid)">Test</button> -->
@@ -32,9 +37,10 @@
 
   <hr>
   <!-- <h3>add new images</h3> -->
-  <app-upload-image-form [user]="user"></app-upload-image-form>
+  <p [hidden]="canEdit">If you want to upload pictures, please log in!</p>
+  <app-upload-image-form *ngIf="canEdit" [user]="user"></app-upload-image-form>
 
-  <hr>  
+  <hr>
   <button (click)="goBack()">Back</button>
   <button (click)="save()">Save</button>
   

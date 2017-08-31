@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -7,6 +7,7 @@ import { User } from '../user';
 import { UserService } from '../user.service';
 import { ImageService } from '../image.service';
 import { Image } from '../image';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-user-detail',
@@ -15,16 +16,23 @@ import { Image } from '../image';
 })
 
 export class UserDetailComponent implements OnInit {
-  @Input() user: User;
+  @Input() user: User;  // current page belonger
   images: Image[] = [];
   imagesUrl: Object = {};
   localImages: Object = {};
   imagesId: number[] = [];
   imagesLoadStatus: Object = {};
+  loginUser: any;  // current login user
+  canEdit: boolean = false;
   password: string = '';
+  intervalId: any;
+  loginValid: boolean = false;
+  tokenErrorMessage: string = 'Login is expire, please login again.';
+
   constructor(
     private userService: UserService,
     private imageService: ImageService,
+    private authService: AuthenticationService,
     private route: ActivatedRoute,
     private location: Location
   ) {
@@ -73,14 +81,26 @@ export class UserDetailComponent implements OnInit {
       console.log('images');
       console.log(this.imagesUrl);
       console.log(this.imagesId);
-      console.log('lslsl');
-    
+      
     }, 1000);
+
+    // example for asyn
     if (this.user) {
       console.log(this.user);
       console.log('love');
     }
     console.log('you');
+
+    // always watch out login user
+    this.intervalId = setInterval(() => this.checkUserMatch(), 2000);
+    // setInterval(this.checkUserMatch.bind(this), 5000);
+  }
+
+  // https://stackoverflow.com/a/37116635/2803344
+  ngOnDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   goBack(): void {
@@ -111,10 +131,38 @@ export class UserDetailComponent implements OnInit {
     console.log('error');
   }
 
-  deleteImage(image: Image, password: string): void {
-    let user = this.user.username
+  deleteImage(image: Image): void {
+    let user = this.user.username;
+    let token = this.loginUser.token;
     this.imageService
-        .deleteImage(image.id, user, password);
+        .deleteImage(image.id, user, token);
   }
 
+  //  check if current login user can edit this page
+  checkUserMatch() {
+    console.log('here is checkUserMatch');
+    console.log(this.user.username);
+    this.loginUser = this.authService.getCurrentUser();
+    // this.loginValid = false;
+    if (this.loginUser) {
+      setTimeout(() => {
+        this.authService.tokenVerify()
+            .then(data => {
+              this.loginValid = data;
+            })
+      }, 200);
+      if (this.loginValid) {
+        if (this.user.username === this.loginUser.username) {
+          this.canEdit = true;
+        }
+        else {
+          this.canEdit = false;
+        }
+      }
+    }
+    else {
+      this.canEdit = false;
+    }
+    console.log(this.canEdit);
+  }
 }

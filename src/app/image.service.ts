@@ -12,8 +12,9 @@ export class ImageService {
   private imageUrl = 'http://192.168.201.211:8024/images/';
   //set headers for authorization, https://stackoverflow.com/a/34465070/2803344
   createAuthorizationHeader(headers: Headers, name: string, pw: string) {
-    headers.append('Authorization', 'Basic ' +
-      btoa(`${name}:${pw}`)); 
+    // headers.append('Authorization', 'Basic ' +
+    //   btoa(`${name}:${pw}`)); 
+      headers.append('Authorization', 'JWT ' + pw);
   }
 
   createOptions(name: string, pw: string) {

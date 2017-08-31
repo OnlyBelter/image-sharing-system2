@@ -5,7 +5,7 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Image } from '../image';
 import { User } from '../user';
 import { ImageService } from '../image.service';
-
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-upload-image-form',
@@ -20,16 +20,23 @@ export class UploadImageFormComponent implements OnInit {
   private imageForm: FormGroup;
   private submitted = false;
   private imageUrl = 'http://192.168.201.211:8024/images/';
-  private password: string;
+  private token: string;
+  private uploadSuccess: boolean = false;
+  private tokenVaild: boolean = true;
+  private tokenErrorMessage: string = 'Login is expire, please login again.';
 
   constructor(
     private imageService: ImageService,
+    private authService: AuthenticationService,
     private fb: FormBuilder,
   ) { }
 
   ngOnInit() {
     console.log(this.user);
-     this.createFrom(this.user);  // create form here, so we can get this.user's value
+    let loginUser = this.getLoginUser();
+    this.token = loginUser['token'];
+    console.log(this.token);
+    this.createFrom(this.user);  // create form here, so we can get this.user's value
   }
   
   createFrom(user: User) {
@@ -41,7 +48,6 @@ export class UploadImageFormComponent implements OnInit {
       fileUrl: 'http://images.fineartamerica.com/images-medium-large-5/mt-shuksan-picture-lake-dennis-romano.jpg',
       owner: user.username,
       des: '',
-      pw: '',
       localImage: '',
     })
     console.log(user);
@@ -59,15 +65,13 @@ export class UploadImageFormComponent implements OnInit {
   onSubmit() {
     // deal with string fields and file separately
     this.submitted = true;
+    this.uploadSuccess = false;
     console.log(this.file);  // file is here
     console.log(this.imageForm.value);  // other fields are here
     
     for (let item in this.imageForm.value) {
       console.log(item)
-      if (item === "pw") {
-        this.password = this.imageForm.value[item];  // password
-      }
-      else if (item === 'localImage') {
+      if (item === 'localImage') {
         this.formData.append('localImage', this.file, this.file.name);  // file
       }
       else {
@@ -80,10 +84,21 @@ export class UploadImageFormComponent implements OnInit {
     console.log(this.formData);
     console.log(this.formData.get('fileUrl'));
     console.log(this.user.username);
-    this.imageService.post(this.formData, this.user.username, this.password)
-                     .then(res =>{
-                       console.log(res);
-                     });
+    // 返回的是一个promise, 属于异步数据，无法立即得到
+    this.authService.tokenVerify().then(data => {
+      this.tokenVaild = data;
+    });
+    // console.log(loginValid);
+    setTimeout(() => {
+      if (this.tokenVaild) {
+        this.imageService.post(this.formData, this.user.username, this.token)
+        .then(res =>{
+          console.log(res);
+          this.uploadSuccess = true;
+        });
+      }
+    }, 200)
+
   }
   
   // reset formGroup
@@ -91,12 +106,15 @@ export class UploadImageFormComponent implements OnInit {
     form.reset({
       userId: this.user.id,
       owner: this.user.username,
-      created: '20170825',
       fileUrl: 'http://www.fujifilm.com.sg/Products/digital_cameras/x/fujifilm_x_t1/sample_images/img/index/ff_x_t1_001.JPG',
     });
     this.formData = new FormData();
     this.submitted=false;
     console.log(form.value);
+  }
+
+  getLoginUser() {
+    return this.authService.getCurrentUser();
   }
   
 }

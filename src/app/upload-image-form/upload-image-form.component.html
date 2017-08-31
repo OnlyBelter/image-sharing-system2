@@ -25,23 +25,6 @@
       <input type="text" class="form-control" id="des" 
       formControlName="des">
     </div>
-    <div class="form-group">
-      <label for="userId">User ID</label>
-      <input type="text" class="form-control" id="userId" 
-      formControlName="userId" readonly>
-      <p>{{imageForm.get('userId').value | json}}</p>
-    </div>
-    <div class="form-group">
-        <label for="owner">Owner</label>
-        <input type="text" class="form-control" id="owner"
-        formControlName="owner" readonly>
-    </div>
-    <!-- input user's password -->
-    <div class="form-group">
-      <label for="pw">password</label>
-      <input type="password" class="form-control" id="pw"
-      formControlName="pw" required>
-    </div>
     <button type="submit" class="btn btn-success" [disabled]="!imageForm.valid">Submit</button>
   </form>
 </div>
@@ -53,33 +36,27 @@
 <div [hidden]="!submitted">
     <h2>You submitted the following content:</h2>
     <div class="row">
-      <div class="col-xs-3">Created</div>
-      <div class="col-xs-9  pull-left">{{ imageForm.get('created').value | json }}</div>
-    </div>
-    <div class="row">
-      <div class="col-xs-3">User ID</div>
-      <div class="col-xs-9 pull-left">{{ imageForm.get('userId').value | json }}</div>
-    </div>
-    <div class="row">
-      <div class="col-xs-3">Description</div>
+      <div class="col-xs-3">Description: </div>
       <div class="col-xs-9 pull-left">{{ imageForm.get('des').value | json }}</div>
     </div>
     <div class="row">
-        <div class="col-xs-3">File Url</div>
+        <div class="col-xs-3">File Url: </div>
         <div class="col-xs-9 pull-left">{{ imageForm.get('fileUrl').value | json }}</div>
     </div>
-    <div class="row">
-      <div class="col-xs-3">Owner</div>
-      <div class="col-xs-9 pull-left">{{ imageForm.get('owner').value | json }}</div>
-    </div>
     <div class="row" *ngIf="file">
-      <div class="col-xs-3">Local Image</div>
+      <div class="col-xs-3">Local Image: </div>
       <div class="col-xs-9 pull-left">{{ file.name }}</div>
+    </div>
+    <div *ngIf="uploadSuccess" class="alert alert-success" role="alert">
+        Uploaded successfully!
+    </div>
+    <div *ngIf="!uploadSuccess" class="alert alert-danger" role="alert">
+        Uploaded error!
+    </div>
+    <div [hidden]="tokenVaild"  class="alert alert-info" role="alert">
+        {{tokenErrorMessage}}
     </div>
     <br>
     <button class="btn btn-primary" (click)="onClick(imageForm)">Upload another image</button>
 </div>
-<!-- TODO: remove this: {{}} -->
-<!-- <div>
-    {{user.username}}
-</div> -->
+

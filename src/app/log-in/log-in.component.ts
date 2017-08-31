@@ -9,11 +9,12 @@ import { AuthenticationService } from '../authentication.service';
 })
 export class LogInComponent implements OnInit {
   public model: any = {};
-  loading = false;
-  error = '';
+  private loading = false;
+  private error = '';
   private currentUser: any;
-  userName: string = '';
+  private userName: string = '';
   private online:boolean = false;
+  private loginError: boolean = false;
 
 
   constructor(
@@ -37,6 +38,8 @@ export class LogInComponent implements OnInit {
     this.loading = true;
     this.authService.login(this.model.username, this.model.password)
         .subscribe(result => {
+          console.log('hhhhhhhhhere, 15:54');
+          console.log(result);
             if (result === true) {
                 this.router.navigate(['/']);
                 this.online = true;
@@ -44,13 +47,21 @@ export class LogInComponent implements OnInit {
                 // console.log(this.currentUser);
             } else {
                 this.error = 'Username or password is incorrect';
+                console.log(this.error);
                 this.loading = false;
             }
         });
     // 登陆后无法立即得到currentUser，延迟200ms后执行
     setTimeout(() => {
       this.currentUser = this.authService.getCurrentUser();
-      this.userName = this.currentUser.username;
+      if (this.currentUser) {
+        this.userName = this.currentUser.username;
+        this.loginError = false;
+      }
+      else {
+        this.loading = false;
+        this.loginError = true;
+      }
       console.log(this.currentUser);
     }, 200);
 }
