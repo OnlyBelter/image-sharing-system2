@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UserService } from '../user.service';
-import { User } from '../user';
+import { UserService } from '../../_service/index';
+import { User } from '../../_data_model/index';
 
 @Component({
   selector: 'app-add-user-form',

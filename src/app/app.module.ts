@@ -6,22 +6,19 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { UserDetailComponent } from './user-detail/user-detail.component';
-import { UserService } from "./user.service";
-import { ImageService } from "./image.service";
-import { AuthenticationService } from './authentication.service';
-import { UsersComponent } from './users/users.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { UserDetailComponent, UsersComponent, DashboardComponent,
+         UserSearchComponent, UploadImageFormComponent, AddUserFormComponent,
+         LogInComponent } from './_component/index';
+import { UserService, ImageService,
+         AuthenticationService, UserSearchService } from "./_service/index";
+
 
 import { AppRoutingModule } from './app-routing/app-routing.module';
 
 // 模拟（Mock）服务（内存Web API）来获取和保存数据
 // import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 // import { InMemoryDataService } from './in-memory-data.service';
-import { UserSearchComponent } from './user-search/user-search.component';
-import { UploadImageFormComponent } from './upload-image-form/upload-image-form.component';
-import { AddUserFormComponent } from './add-user-form/add-user-form.component';
-import { LogInComponent } from './log-in/log-in.component';
+
 
 @NgModule({
   declarations: [
@@ -44,7 +41,8 @@ import { LogInComponent } from './log-in/log-in.component';
     // RouterModule.forRoot(appRoutes),
     AppRoutingModule, 
   ],
-  providers: [UserService, ImageService, AuthenticationService], // 所有的服务必须在这里注册
+  providers: [UserService, ImageService, 
+              AuthenticationService, UserSearchService], // 所有的服务必须在这里注册
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -6,7 +6,7 @@ import { Headers, Http, RequestOptions } from "@angular/http";
 import 'rxjs/add/operator/toPromise';
 
 // import { USERS } from './mock-users';
-import { User } from "./user";
+import { User, userApi } from "../_data_model/index";
 
 
 // 使用单独的服务可以保持组件精简，
@@ -18,7 +18,7 @@ import { User } from "./user";
 export class UserService {
 
   // private usersUrl = 'api/users';
-  private usersUrl = 'http://192.168.201.211:8024/users'; 
+  private usersUrl = userApi; 
   // private usersUrl = 'http://localhost:8000/users'; 
   constructor(private http: Http) { }
   
@@ -74,7 +74,7 @@ export class UserService {
     // this.createAuthorizationHeader(headers);
     let options = this.createOptions('belter', 'password123');
 
-    const url = `${this.usersUrl}/${id}` + '?format=json';
+    const url = `${this.usersUrl}${id}` + '?format=json';
     return this.http.get(url, options)
                 .toPromise()
                 .then(res => res.json() as User)
@@ -84,7 +84,7 @@ export class UserService {
   // 使用 HTTP 的 put() 方法来把修改持久化到服务端
   update(user: User): Promise<User> {
     let options = this.createOptions(user.username, 'password123');
-    const url = `${this.usersUrl}/${user.id}`;
+    const url = `${this.usersUrl}${user.id}`;
     return this.http.put(url, JSON.stringify(user), options)
                     .toPromise()
                     .then(() => user)  // ()
@@ -93,7 +93,7 @@ export class UserService {
 
   create(name: string): Promise<User> {
     let options = this.createOptions('belter', 'password123');
-    const url = this.usersUrl + '/';
+    const url = this.usersUrl;
     return this.http
             .post(url, JSON.stringify({username: name, password: 'password123', 
             email: 'xx@126.com', first_name: "", last_name: ""}), options)
@@ -104,8 +104,8 @@ export class UserService {
   }
 
   delete(id: number): Promise<void> {
-    let options = this.createOptions('belter', 'password');
-    const url = `${this.usersUrl}/${id}`;
+    let options = this.createOptions('belter', 'password123');
+    const url = `${this.usersUrl}${id}`;
     return this.http.delete(url, options)
             .toPromise()
             .then(() => null)  // 什么也不返回

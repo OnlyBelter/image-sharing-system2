@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { UserDetailComponent } from '../user-detail/user-detail.component';
+import { UserDetailComponent, UsersComponent, DashboardComponent } from '../_component/index';
 // import { UserService } from "../user.service";
-import { UsersComponent } from '../users/users.component';
-import { DashboardComponent } from '../dashboard/dashboard.component';
+// import { UsersComponent } from '../users/users.component';
+// import { DashboardComponent } from '../dashboard/dashboard.component';
 
 
 const appRoutes: Routes = [

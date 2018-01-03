@@ -4,13 +4,12 @@ import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { User } from './user';
+import { User, userApi } from '../_data_model/index';
 
 @Injectable()
 export class UserSearchService {
 
-  // private usersUrl = 'http://localhost:8000/users'; 
-  private usersUrl = 'http://192.168.201.211:8024/users';
+  private usersUrl = userApi;
   constructor(private http: Http) { }
 
   //set headers for authorization, https://stackoverflow.com/a/34465070/2803344

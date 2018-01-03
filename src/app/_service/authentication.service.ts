@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
+import { tokenAuthApi, tokenRefreshApi, tokenVerifyApi } from '../_data_model/index'
+
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 
 @Injectable()
 export class AuthenticationService {
   public token: string;
-  private url_auth = 'http://192.168.201.211:8024/api-token-auth/';
-  private url_verify = 'http://192.168.201.211:8024/api-token-verify/';
-  private url_refresh = 'http://192.168.201.211:8024/api-token-refresh/';
+  private url_auth = tokenAuthApi;
+  private url_verify = tokenVerifyApi;
+  private url_refresh = tokenRefreshApi;
   private options: RequestOptions;
   private currentUser: any;
 
@@ -52,9 +54,9 @@ export class AuthenticationService {
   }
 
   getCurrentUser(): Observable<any> {
-    console.log('i am in getCurrentUser');
+    // console.log('i am in getCurrentUser');
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    console.log(this.currentUser);
+    // console.log(this.currentUser);
     return this.currentUser;
     
   }
@@ -63,7 +65,7 @@ export class AuthenticationService {
     return this.http.post(this.url_verify, JSON.stringify({'token': this.token}), this.options)
             .toPromise()
             .then((response: Response) => {
-              console.log(response);
+              // console.log(response);
               if (response.status === 200) {
                 return true;
               }

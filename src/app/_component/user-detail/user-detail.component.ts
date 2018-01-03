@@ -3,11 +3,9 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 
 import 'rxjs/add/operator/switchMap';
-import { User } from '../user';
-import { UserService } from '../user.service';
-import { ImageService } from '../image.service';
-import { Image } from '../image';
-import { AuthenticationService } from '../authentication.service';
+// import { User } from '../user';
+import { UserService, ImageService, AuthenticationService } from '../../_service/index';
+import { User, Image } from '../../_data_model/index';
 
 @Component({
   selector: 'app-user-detail',
@@ -16,7 +14,7 @@ import { AuthenticationService } from '../authentication.service';
 })
 
 export class UserDetailComponent implements OnInit {
-  @Input() user: User;  // current page belonger
+  user: User;  // current page belonger
   images: Image[] = [];
   imagesUrl: Object = {};
   localImages: Object = {};
@@ -43,46 +41,54 @@ export class UserDetailComponent implements OnInit {
   // 并且使用userService来获取具有这个id的用户数据
   // user的id是数字，而路由参数的值总是字符串。 所以我们需要通过 JavaScript 的 (+) 操作符把路由参数的值转成数字。
   ngOnInit() {
+    this.varifyToken();
     this.route.params
         .switchMap((params: Params) => this.userService.getUserByHttp(+params['id']))
         .subscribe(rep => this.user = rep);
-
+    
     setTimeout(() => {
       console.log(this.user);
+      if (this.user) {
+        this.checkUserMatch();
+      }
       if (this.user.images) {
         // console.log('print images');
         // console.log(this.user.images);
         this.user.images.forEach(ele => this.getImage(ele).then(res => {
           console.log(res);
           // let imgId = res.id;
-          this.images.push(res);
-          this.imagesId.push(res.id);
-          this.imagesId.sort(function(a: number, b: number) {
-            if (a > b) {
-              return 1;
+            this.images.push(res);
+            this.imagesId.push(res.id);
+            this.imagesId.sort(function(a: number, b: number) {
+              if (a > b) {
+                return 1;
+              }
+              if (a < b) {
+                return -1;
+              }
+              if (a === b) {
+                return 0;
+              }
+            });
+            // console.log(this.imagesId);
+            if (res.localImage) {
+              this.imagesUrl[res.id] = res.localImage;
             }
-            if (a < b) {
-              return -1;
+            else {
+              this.imagesUrl[res.id] = res.fileUrl;
             }
-            if (a === b) {
-              return 0;
-            }
-          });
-          // console.log(this.imagesId);
-          if (res.localImage) {
-            this.imagesUrl[res.id] = res.localImage;
-          }
-          else {
-            this.imagesUrl[res.id] = res.fileUrl;
-          }
-          this.imagesLoadStatus[res.id] = 0;
-        }));
+            this.imagesLoadStatus[res.id] = 0;
+
+        }).catch(res => {
+            console.log(res);
+          })
+      );
       }
       console.log('images');
       console.log(this.imagesUrl);
       console.log(this.imagesId);
       
-    }, 1000);
+    }, 2000);
 
     // example for asyn
     if (this.user) {
@@ -92,7 +98,7 @@ export class UserDetailComponent implements OnInit {
     console.log('you');
 
     // always watch out login user
-    this.intervalId = setInterval(() => this.checkUserMatch(), 2000);
+    this.intervalId = setInterval(() => this.checkUserMatch(), 60000);
     // setInterval(this.checkUserMatch.bind(this), 5000);
   }
 
@@ -138,10 +144,7 @@ export class UserDetailComponent implements OnInit {
         .deleteImage(image.id, user, token);
   }
 
-  //  check if current login user can edit this page
-  checkUserMatch() {
-    console.log('here is checkUserMatch');
-    console.log(this.user.username);
+  varifyToken() {
     this.loginUser = this.authService.getCurrentUser();
     // this.loginValid = false;
     if (this.loginUser) {
@@ -150,19 +153,29 @@ export class UserDetailComponent implements OnInit {
             .then(data => {
               this.loginValid = data;
             })
-      }, 200);
-      if (this.loginValid) {
-        if (this.user.username === this.loginUser.username) {
-          this.canEdit = true;
-        }
-        else {
-          this.canEdit = false;
-        }
+      }, 20);
+    }
+    return this.loginValid;
+
+  }
+
+  //  check if current login user can edit this page
+  checkUserMatch() {
+    // console.log('here is checkUserMatch');
+    // console.log(this.user);
+    // console.log(this.user.username);
+    this.loginValid = this.varifyToken();
+    if (this.loginValid) {
+      if (this.user.username === this.loginUser.username) {
+        this.canEdit = true;
+      }
+      else {
+        this.canEdit = false;
       }
     }
     else {
       this.canEdit = false;
     }
-    console.log(this.canEdit);
+    // console.log(this.canEdit);
   }
 }

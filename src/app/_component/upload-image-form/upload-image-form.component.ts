@@ -2,10 +2,8 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms/forms';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
-import { Image } from '../image';
-import { User } from '../user';
-import { ImageService } from '../image.service';
-import { AuthenticationService } from '../authentication.service';
+import { Image, User, imageApi } from '../../_data_model/index';
+import { ImageService, AuthenticationService } from '../../_service/index';
 
 @Component({
   selector: 'app-upload-image-form',
@@ -19,7 +17,7 @@ export class UploadImageFormComponent implements OnInit {
   private formData: FormData = new FormData();
   private imageForm: FormGroup;
   private submitted = false;
-  private imageUrl = 'http://192.168.201.211:8024/images/';
+  private imageUrl = imageApi;
   private token: string;
   private uploadSuccess: boolean = false;
   private tokenVaild: boolean = true;

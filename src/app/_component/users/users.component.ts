@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 
-import { User } from '../user';
-import { UserService } from '../user.service';
+import { User } from '../../_data_model/index';
+import { UserService } from '../../_service/index';
 
 import { Router } from '@angular/router';  // 需要导航的component都会用到这个模块
 

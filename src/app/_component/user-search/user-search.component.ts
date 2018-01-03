@@ -12,8 +12,8 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-import { UserSearchService } from '../user-search.service';
-import { User } from '../user';
+import { UserSearchService } from '../../_service/index';
+import { User } from '../../_data_model/index';
 
 @Component({
   selector: 'app-user-search',

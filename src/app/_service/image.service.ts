@@ -3,13 +3,13 @@ import { Headers, Http, RequestOptions } from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';
 
-import { Image } from "./image";
-import { User } from './user';
+import { User, Image, imageApi } from "../_data_model/index";
+// import { User } from './user';
 
 @Injectable()
 export class ImageService {
 
-  private imageUrl = 'http://192.168.201.211:8024/images/';
+  private imageUrl = imageApi;
   //set headers for authorization, https://stackoverflow.com/a/34465070/2803344
   createAuthorizationHeader(headers: Headers, name: string, pw: string) {
     // headers.append('Authorization', 'Basic ' +
@@ -42,9 +42,13 @@ export class ImageService {
   }
 
   getImageByUrl(url: string): Promise<Image> {
+    console.log(url);
     return this.http.get(url)
                     .toPromise()
-                    .then(res => res.json() as Image)
+                    .then(res => {
+                      console.log(res.json());
+                      return res.json();
+                      })
                     // .then(res => console.log(res))
                     .catch(this.handleError);
   }
@@ -73,6 +77,6 @@ export class ImageService {
 
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only
-    return Promise.reject(error.message || error);
+    return Promise.reject(error);
   }
 }
